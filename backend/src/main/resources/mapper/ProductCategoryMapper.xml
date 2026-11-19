@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.crm.mapper.ProductCategoryMapper">
+    <resultMap id="category" type="com.demo.crm.entity.ProductCategory" autoMapping="true">
+        <id column="id" property="id"/>
+        <result column="attribute_template" property="attributeTemplate" typeHandler="com.demo.crm.config.JsonNodeTypeHandler"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="category">SELECT * FROM crm_product_category ORDER BY sort_order,id</select>
+    <select id="lockAll" resultMap="category">SELECT * FROM crm_product_category ORDER BY id FOR UPDATE</select>
+    <select id="findById" resultMap="category">SELECT * FROM crm_product_category WHERE id=#{id}</select>
+    <select id="countProducts" resultType="int">SELECT COUNT(*) FROM crm_product WHERE category_id=#{id}</select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO crm_product_category(parent_id,name,code,attribute_template,sort_order,status,description)
+        VALUES(#{parentId},#{name},#{code},#{attributeTemplate,typeHandler=com.demo.crm.config.JsonNodeTypeHandler},#{sortOrder},#{status},#{description})
+    </insert>
+
+    <update id="update">
+        UPDATE crm_product_category SET parent_id=#{parentId},name=#{name},code=#{code},
+            attribute_template=#{attributeTemplate,typeHandler=com.demo.crm.config.JsonNodeTypeHandler},
+            sort_order=#{sortOrder},status=#{status},description=#{description} WHERE id=#{id}
+    </update>
+
+    <delete id="delete">DELETE FROM crm_product_category WHERE id=#{id}</delete>
+</mapper>
